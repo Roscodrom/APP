@@ -4,9 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Coliseum extends ScreenAdapter {
@@ -27,6 +33,21 @@ public class Coliseum extends ScreenAdapter {
 
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
+        ImageButton backButton = new ImageButton(skin);
+        backButton.setPosition(5, GAME_HEIGHT - (backButton.getHeight()-30));
+        backButton.setSize(backButton.getWidth()/2.1f,backButton.getHeight());
+        backButton.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/back_icon.png"))));
+        backButton.setTransform(true);
+        backButton.setScale(0.65f);
+        stage.addActor(backButton);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((RoscodromGame) Gdx.app.getApplicationListener()).showMainMenuScreen();
+            }
+        });
+
+
     }
 
     @Override
@@ -38,9 +59,6 @@ public class Coliseum extends ScreenAdapter {
         stage.act(delta);
         stage.draw();
 
-        if (Gdx.input.isTouched()) {
-            ((RoscodromGame) Gdx.app.getApplicationListener()).showMainMenuScreen();
-        }
     }
 
     @Override
