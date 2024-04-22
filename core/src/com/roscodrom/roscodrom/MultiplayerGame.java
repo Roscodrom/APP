@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -46,6 +47,11 @@ public class MultiplayerGame extends ScreenAdapter {
                 ((RoscodromGame) Gdx.app.getApplicationListener()).showMainMenuScreen();
             }
         });
+
+        Label title = new Label("MULTIJUGADOR",skin, "big");
+        title.setPosition(GAME_WIDTH / 2f - title.getWidth()/2+40, 720);
+        title.setFontScale(0.9f);
+        stage.addActor(title);
 
     }
 
