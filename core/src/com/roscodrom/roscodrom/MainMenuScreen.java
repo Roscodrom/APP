@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.io.File;
+
 public class MainMenuScreen extends ScreenAdapter {
     private final int GAME_WIDTH = 480;
     private final int GAME_HEIGHT = 800;
@@ -61,7 +63,11 @@ public class MainMenuScreen extends ScreenAdapter {
         multiplayerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((RoscodromGame) Gdx.app.getApplicationListener()).showMultiplayerGame();
+                if (doesProfileFileExist()) {
+                    ((RoscodromGame) Gdx.app.getApplicationListener()).showMultiplayerGame();
+                } else {
+                    ((RoscodromGame) Gdx.app.getApplicationListener()).showProfile();
+                }
             }
         });
 
@@ -130,5 +136,10 @@ public class MainMenuScreen extends ScreenAdapter {
         batch.dispose();
         skin.dispose();
         stage.dispose();
+    }
+
+    boolean doesProfileFileExist() {
+        File file = new File("./assets/data/profile.txt");
+        return file.exists();
     }
 }
