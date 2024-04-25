@@ -2,6 +2,7 @@ package com.roscodrom.roscodrom;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -163,7 +164,7 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     boolean doesProfileFileExist() {
-        File file = new File("./assets/data/profile.txt");
+        FileHandle file = Gdx.files.local("profile.txt");
         return file.exists();
     }
 }

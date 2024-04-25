@@ -3,6 +3,7 @@ package com.roscodrom.roscodrom;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -96,6 +97,7 @@ public class Profile extends ScreenAdapter {
         emailTF.setScale(0.5f);
         stage.addActor(emailTF);
 
+        // TODO Only number
         Label telephoneLabel = new Label("Numero de telefon:",skin, "big");
         telephoneLabel.setPosition(posX, 390);
         telephoneLabel.setFontScale(0.65f);
@@ -245,14 +247,15 @@ public class Profile extends ScreenAdapter {
                 String responseString = httpResponse.getResultAsString();
                 System.out.println("OK: " + responseString);
                 if (httpResponse.getStatus().getStatusCode()==201) {
-                    saveToFile(json, "./assets/data/profile.txt");
+                    saveToFile(json, "profile.txt");
 
                     if (responseString!= null &&!responseString.isEmpty()) {
                         Json jsonParser = new Json();
                         JsonValue response = jsonParser.fromJson(null, responseString);
                         if (response!= null) {
                             String apiKey = response.get("data").getString("api_key");
-                            saveToFile(apiKey, "./assets/data/api_token.txt");
+                            saveToFile(apiKey, "api_token.txt");
+                            // TODO Change to mainMenu
                         } else {
                             System.out.println("Error parsing JSON response");
                         }
@@ -280,23 +283,12 @@ public class Profile extends ScreenAdapter {
     }
 
     public void saveToFile(String content, String filePath) {
-        FileWriter fileWriter = null;
+        FileHandle file = Gdx.files.local(filePath);
         try {
-            fileWriter = new FileWriter(filePath);
-            fileWriter.write(content);
-            fileWriter.flush();
-        } catch (IOException e) {
+            file.writeString(content, false);
+        } catch (Exception e) {
             System.err.println("Error writing to file: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            if (fileWriter != null) {
-                try {
-                    fileWriter.close();
-                } catch (IOException e) {
-                    System.err.println("Error closing FileWriter: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }
