@@ -83,7 +83,6 @@ public class Profile extends ScreenAdapter {
         TextField nicknameTF = new TextField("", skin);
         nicknameTF.setSize(400, nicknameTF.getHeight()*1.5f);
         nicknameTF.setPosition(posX, 600);
-        nicknameTF.setScale(0.5f);
         stage.addActor(nicknameTF);
 
         Label emailLabel = new Label("Email:",skin, "big");
@@ -94,19 +93,22 @@ public class Profile extends ScreenAdapter {
         TextField emailTF = new TextField("", skin);
         emailTF.setSize(400, emailTF.getHeight()*1.5f);
         emailTF.setPosition(posX, 470);
-        emailTF.setScale(0.5f);
         stage.addActor(emailTF);
 
-        // TODO Only number
         Label telephoneLabel = new Label("Numero de telefon:",skin, "big");
         telephoneLabel.setPosition(posX, 390);
         telephoneLabel.setFontScale(0.65f);
         stage.addActor(telephoneLabel);
 
         TextField telephoneTF = new TextField("", skin);
+        telephoneTF.setTextFieldFilter(new TextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(TextField textField, char c) {
+                return  c >= '0' && c <= '9';
+            }
+        });
         telephoneTF.setSize(400, telephoneTF.getHeight()*1.5f);
         telephoneTF.setPosition(posX, 340);
-        telephoneTF.setScale(0.5f);
         stage.addActor(telephoneTF);
 
         // IMAGEN DE PERFIL
