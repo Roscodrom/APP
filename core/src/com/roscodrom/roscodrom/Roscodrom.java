@@ -2,7 +2,7 @@ package com.roscodrom.roscodrom;
 
 import com.badlogic.gdx.Game;
 
-public class RoscodromGame extends Game {
+public class Roscodrom extends Game {
 	MainMenuScreen mainMenuScreen;
 	IndividualGame individualGame;
 	MultiplayerGame multiplayerGame;

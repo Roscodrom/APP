@@ -44,7 +44,7 @@ public class Coliseum extends ScreenAdapter {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((RoscodromGame) Gdx.app.getApplicationListener()).showMainMenuScreen();
+                ((Roscodrom) Gdx.app.getApplicationListener()).showMainMenuScreen();
             }
         });
 

@@ -55,7 +55,7 @@ public class MainMenuScreen extends ScreenAdapter {
         individualButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((RoscodromGame) Gdx.app.getApplicationListener()).showIndividualGame();
+                ((Roscodrom) Gdx.app.getApplicationListener()).showIndividualGame();
             }
         });
 
@@ -69,7 +69,7 @@ public class MainMenuScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (doesProfileFileExist()) {
-                    ((RoscodromGame) Gdx.app.getApplicationListener()).showMultiplayerGame();
+                    ((Roscodrom) Gdx.app.getApplicationListener()).showMultiplayerGame();
                 } else {
                     Dialog dialog = new Dialog("PER JUGAR MULTIJUGADOR", skin){
                         protected void result(Object object)
@@ -77,7 +77,7 @@ public class MainMenuScreen extends ScreenAdapter {
                             System.out.println("Option: " + object);
                             if (object.equals(1)) {
                                 System.out.println("DONE");
-                                ((RoscodromGame) Gdx.app.getApplicationListener()).showProfile();
+                                ((Roscodrom) Gdx.app.getApplicationListener()).showProfile();
                             } else {
                                 System.out.println("No DONE");
                             }
@@ -105,7 +105,7 @@ public class MainMenuScreen extends ScreenAdapter {
         coliseumButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((RoscodromGame) Gdx.app.getApplicationListener()).showColiseum();
+                ((Roscodrom) Gdx.app.getApplicationListener()).showColiseum();
             }
         });
 
@@ -118,7 +118,7 @@ public class MainMenuScreen extends ScreenAdapter {
         optionsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((RoscodromGame) Gdx.app.getApplicationListener()).showOptions();
+                ((Roscodrom) Gdx.app.getApplicationListener()).showOptions();
             }
         });
 
@@ -131,7 +131,7 @@ public class MainMenuScreen extends ScreenAdapter {
         profileButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((RoscodromGame) Gdx.app.getApplicationListener()).showProfile();
+                ((Roscodrom) Gdx.app.getApplicationListener()).showProfile();
             }
         });
     }

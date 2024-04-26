@@ -2,7 +2,7 @@ package com.roscodrom.roscodrom;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.roscodrom.roscodrom.RoscodromGame;
+import com.roscodrom.roscodrom.Roscodrom;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
@@ -11,6 +11,6 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Roscodrom");
 		config.setWindowedMode(480,800);
-		new Lwjgl3Application(new RoscodromGame(), config);
+		new Lwjgl3Application(new Roscodrom(), config);
 	}
 }
