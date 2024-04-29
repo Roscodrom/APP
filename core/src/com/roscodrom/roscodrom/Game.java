@@ -1,5 +1,14 @@
 package com.roscodrom.roscodrom;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class Game {
@@ -7,6 +16,22 @@ public class Game {
     private String[] vocales = {"A", "E", "I", "O", "U"};
     private String[] consonantes = {"B", "C", "Ç", "D", "F", "G", "H", "J", "K", "L", "L·L", "M",
                                     "N", "NY", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"};
+    List<String> wordList;
+
+    public Game(){
+        wordList = new ArrayList<>();
+        FileHandle fileHandle = Gdx.files.external("dicts/catala_dict.txt");
+        try {
+            BufferedReader bufferedReader = new BufferedReader(fileHandle.reader());
+            String word;
+            while ((word = bufferedReader.readLine()) != null) {
+                wordList.add(word);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void generateRoscoLetters() {
         Random random = new Random();
@@ -58,8 +83,28 @@ public class Game {
         return wordPoints * ((int) (player_word.length() / 2));
     }
 
-    private boolean checkUserWord(String player_word) {
-        return true;
+    private boolean checkUserWord(String player_word, List<String> wordList) {
+        int compareNum = 0;
+        boolean wordNotInDict = false;
+        Collator collator = Collator.getInstance(new Locale("ca"));
+
+        if (wordList.size() > 1) {
+            compareNum = collator.compare(player_word, (String) (wordList.get(wordList.size() / 2)));
+        } else {
+            if (!(player_word.equals(wordList.get(0)))) {
+                wordNotInDict = true;
+            }
+        }
+
+        if (wordNotInDict) {
+            return false;
+        } else if (compareNum < 0) {
+            return checkUserWord(player_word, wordList.subList(0, wordList.size() / 2));
+        } else if (compareNum > 0) {
+            return checkUserWord(player_word, wordList.subList(wordList.size() / 2, wordList.size()));
+        } else {
+            return true;
+        }
     }
 
     private String getRandomLetter(boolean isVocal, Random random) {
