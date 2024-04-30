@@ -9,14 +9,28 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+
 import java.util.Random;
 
 public class Game {
+    private final int GAME_WIDTH = 480;
+    private Skin skin= new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+    public String word = "";
+    public Label wordLabel;
     private String[] rosco_letters = { "", "", "", "", "", "", "", "" };
     private String[] vocales = {"A", "E", "I", "O", "U"};
     private String[] consonantes = {"B", "C", "Ç", "D", "F", "G", "H", "J", "K", "L", "L·L", "M",
                                     "N", "NY", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"};
-    List<String> wordList;
+    public List<String> wordList;
 
     public Game(){
         wordList = new ArrayList<>();
@@ -83,7 +97,7 @@ public class Game {
         return wordPoints * ((int) (player_word.length() / 2));
     }
 
-    private boolean checkUserWord(String player_word, List<String> wordList) {
+    public boolean checkUserWord(String player_word, List<String> wordList) {
         int compareNum = 0;
         boolean wordNotInDict = false;
         Collator collator = Collator.getInstance(new Locale("ca"));
@@ -126,5 +140,49 @@ public class Game {
             }
         }
         return false;
+    }
+
+    public Array<Actor> generateRosco() {
+        generateRoscoLetters();
+        Array<Actor> actors = new Array<Actor>();
+        //Game game = new Game();
+        int numberLetters = rosco_letters.length;
+        int radius = 140;
+
+        for (int i=0; i < numberLetters; i++) {
+            float rad = (float) (2 * Math.PI * i / numberLetters);
+
+            String letter = rosco_letters[i].toString();
+            Image letterButton = new Image(new Texture(Gdx.files.internal("images/button.png")));
+            letterButton.setSize(75,75);
+            letterButton.setPosition( (float) (radius * Math.cos(rad)) + (GAME_WIDTH/2f-letterButton.getWidth()/2), (float) (radius * Math.sin(rad)) + 150);
+            letterButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (word.length()<=15){
+                        System.out.println(letter);
+                        word = word + letter.toUpperCase();
+                        wordLabel.setText(word);
+                    }
+                }
+            });
+            actors.add(letterButton);
+
+            Label letterLabel = new Label(letter, skin, "big");
+            letterLabel.setPosition( letterButton.getX()+18, letterButton.getY() );
+            letterLabel.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (word.length()<=14){
+                        System.out.println(letter);
+                        word = word + letter.toUpperCase();
+                        wordLabel.setText(word);
+                    }
+                }
+            });
+            actors.add(letterLabel);
+        }
+
+        return actors;
     }
 }
