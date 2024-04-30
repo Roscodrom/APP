@@ -9,7 +9,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,10 +30,11 @@ public class Game {
     private String[] consonantes = {"B", "C", "Ç", "D", "F", "G", "H", "J", "K", "L", "L·L", "M",
                                     "N", "NY", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"};
     public List<String> wordList;
+    public List<String> usedWords = new ArrayList<>();
 
     public Game(){
         wordList = new ArrayList<>();
-        FileHandle fileHandle = Gdx.files.external("dicts/catala_dict.txt");
+        FileHandle fileHandle = Gdx.files.internal("dicts/catala_dict.txt");
         try {
             BufferedReader bufferedReader = new BufferedReader(fileHandle.reader());
             String word;
@@ -45,6 +45,14 @@ public class Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        usedWords.add("");
+        usedWords.add("");
+        usedWords.add("");
+        usedWords.add("");
+        usedWords.add("");
+        usedWords.add("");
+
     }
 
     private void generateRoscoLetters() {
@@ -73,7 +81,7 @@ public class Game {
 
     }
 
-    private int calculateWordPoints(String player_word) {
+    public int calculateWordPoints(String player_word) {
         if (player_word.equals("KIWI")) {
             return 99999999;
         }
@@ -152,7 +160,7 @@ public class Game {
         for (int i=0; i < numberLetters; i++) {
             float rad = (float) (2 * Math.PI * i / numberLetters);
 
-            String letter = rosco_letters[i].toString();
+            String letter = rosco_letters[i];
             Image letterButton = new Image(new Texture(Gdx.files.internal("images/button.png")));
             letterButton.setSize(75,75);
             letterButton.setPosition( (float) (radius * Math.cos(rad)) + (GAME_WIDTH/2f-letterButton.getWidth()/2), (float) (radius * Math.sin(rad)) + 150);
@@ -184,5 +192,10 @@ public class Game {
         }
 
         return actors;
+    }
+
+    public String getLastWords() {
+        int length = usedWords.size();
+        return (usedWords.get(length-5) + "\n" + usedWords.get(length-4) + "\n" + usedWords.get(length-3) + "\n" + usedWords.get(length-2) + "\n" + usedWords.get(length-1));
     }
 }
