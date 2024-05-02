@@ -9,6 +9,7 @@ public class Roscodrom extends Game {
 	Coliseum coliseum;
 	Options options;
 	Profile profile;
+	GameOver gameOver;
 
 	@Override
 	public void create () {
@@ -39,5 +40,9 @@ public class Roscodrom extends Game {
 	public void showProfile() {
 		profile = new Profile();
 		setScreen(profile);
+	}
+	public void showGameOver(int points) {
+		gameOver = new GameOver(points);
+		setScreen(gameOver);
 	}
 }

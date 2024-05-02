@@ -168,7 +168,7 @@ public class Game {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (word.length()<=15){
-                        System.out.println(letter);
+                        //System.out.println(letter);
                         word = word + letter.toUpperCase();
                         wordLabel.setText(word);
                     }
@@ -177,12 +177,12 @@ public class Game {
             actors.add(letterButton);
 
             Label letterLabel = new Label(letter, skin, "big");
-            letterLabel.setPosition( letterButton.getX()+18, letterButton.getY() );
+            letterLabel.setPosition( (float) (radius * Math.cos(rad)) + (GAME_WIDTH/2f-letterLabel.getWidth()/2), (float) (radius * Math.sin(rad)) + 150 );
             letterLabel.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (word.length()<=14){
-                        System.out.println(letter);
+                        //System.out.println(letter);
                         word = word + letter.toUpperCase();
                         wordLabel.setText(word);
                     }

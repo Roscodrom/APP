@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class IndividualGame extends ScreenAdapter {
@@ -36,6 +37,8 @@ public class IndividualGame extends ScreenAdapter {
     private Sound sound;
     ScrollPane scrollPane;
     private VerticalGroup verticalGroup;
+    int countdown = 60;
+    Timer timer = new Timer();
 
     @Override
     public void show() {
@@ -62,7 +65,7 @@ public class IndividualGame extends ScreenAdapter {
         });
 
         verticalGroup = new VerticalGroup();
-        verticalGroup.align(Align.topLeft);
+        verticalGroup.align(Align.bottomLeft);
 
         scrollPane = new ScrollPane(verticalGroup);
         scrollPane.setFadeScrollBars(false);
@@ -85,10 +88,36 @@ public class IndividualGame extends ScreenAdapter {
         game.wordLabel.setFontScale(0.55f);
         stage.addActor(game.wordLabel);
 
+
         Label userPoints = new Label("0", skin, "big");
         userPoints.setPosition(390, 340);
         userPoints.setAlignment(Align.right);
         stage.addActor(userPoints);
+
+        Label timerLabel = new Label("", skin, "big");
+        timerLabel.setPosition(GAME_WIDTH / 2f - 210, 340);
+        stage.addActor(timerLabel);
+
+        timer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+
+                if (countdown > -1) {
+                    timerLabel.setText(countdown+"''");
+                    if (countdown % 10 == 0 && countdown != 10) {
+                        timerLabel.setColor(Color.ORANGE);
+                    } else if (countdown %2 != 0 && countdown < 10) {
+                        timerLabel.setColor(Color.RED);
+                    } else {
+                        timerLabel.setColor(Color.WHITE);
+                    }
+                } else {
+                    timer.stop();
+                    ((Roscodrom) Gdx.app.getApplicationListener()).showGameOver(Integer.parseInt(String.valueOf(userPoints.getText())));
+                }
+                countdown--;
+            }
+        }, 0, 1);
 
         Image sendButton = new Image(new Texture(Gdx.files.internal("images/send.png")));
         sendButton.setSize(60,60);
@@ -103,7 +132,7 @@ public class IndividualGame extends ScreenAdapter {
                     if (isCorrect) {
                         sound = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.mp3"));
                         game.usedWords.add(game.word);
-                        verticalGroup.addActor(new Label(game.word, skin));
+                        verticalGroup.addActor(new Label(game.word + " x" + game.calculateWordPoints(game.word), skin));
                         userPoints.setText(String.valueOf(Integer.parseInt(String.valueOf(userPoints.getText())) + (game.calculateWordPoints(game.word))));
                     } else {
                         sound = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.mp3"));
@@ -164,5 +193,6 @@ public class IndividualGame extends ScreenAdapter {
         batch.dispose();
         skin.dispose();
         stage.dispose();
+        timer.stop();
     }
 }
