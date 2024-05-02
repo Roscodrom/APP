@@ -257,7 +257,7 @@ public class Profile extends ScreenAdapter {
                         if (response!= null) {
                             String apiKey = response.get("data").getString("api_key");
                             saveToFile(apiKey, "api_token.txt");
-                            // TODO Change to mainMenu
+                            ((Roscodrom) Gdx.app.getApplicationListener()).showMainMenuScreen();
                         } else {
                             System.out.println("Error parsing JSON response");
                         }
