@@ -20,9 +20,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -43,6 +45,8 @@ public class IndividualGame extends ScreenAdapter {
     private Stage stage;
     Game game = new Game();
     private Sound sound;
+    private ScrollPane scrollPane;
+    private VerticalGroup verticalGroup;
 
     @Override
     public void show() {
@@ -68,12 +72,16 @@ public class IndividualGame extends ScreenAdapter {
             }
         });
 
-        Label usedWordsLabel = new Label(game.getLastWords(), skin, "big");
-        usedWordsLabel.setSize(GAME_WIDTH-40, usedWordsLabel.getHeight());
-        usedWordsLabel.setPosition(GAME_WIDTH / 2f - 220, 490);
-        usedWordsLabel.setFontScale(0.9f);
-        usedWordsLabel.setWrap(true);
-        stage.addActor(usedWordsLabel);
+        verticalGroup = new VerticalGroup();
+        verticalGroup.align(Align.topLeft);
+
+        scrollPane = new ScrollPane(verticalGroup);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setSize(450, 285);
+        scrollPane.setPosition(GAME_WIDTH / 2f - 220, 495);
+
+        stage.addActor(scrollPane);
 
 
         TextField rectangle = new TextField("",skin);
@@ -99,18 +107,20 @@ public class IndividualGame extends ScreenAdapter {
         sendButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Validating: " + game.word);
-                boolean isCorrect = game.checkUserWord(game.word, game.wordList);
-                System.out.println(isCorrect);
-                if (isCorrect) {
-                    sound = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.mp3"));
-                    game.usedWords.add(game.word);
-                    usedWordsLabel.setText(game.getLastWords());
-                    userPoints.setText(String.valueOf(Integer.valueOf(String.valueOf(userPoints.getText()))+(game.calculateWordPoints(game.word))));
-                } else {
-                    sound = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.mp3"));
+                if (game.word.length() >= 3) {
+                    System.out.println("Validating: " + game.word);
+                    boolean isCorrect = game.checkUserWord(game.word, game.wordList);
+                    System.out.println(isCorrect);
+                    if (isCorrect) {
+                        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.mp3"));
+                        game.usedWords.add(game.word);
+                        verticalGroup.addActor(new Label(game.word, skin));
+                        userPoints.setText(String.valueOf(Integer.valueOf(String.valueOf(userPoints.getText())) + (game.calculateWordPoints(game.word))));
+                    } else {
+                        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.mp3"));
+                    }
+                    sound.play();
                 }
-                sound.play();
                 game.word = "";
                 game.wordLabel.setText("");
             }
