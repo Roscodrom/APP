@@ -133,6 +133,20 @@ public class IndividualGame extends ScreenAdapter {
             stage.addActor(actor);
         }
 
+        Label delLabel = new Label(" < ", skin, "big");
+        delLabel.setPosition(GAME_WIDTH/2f-delLabel.getWidth()/2f, 150);
+        delLabel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (game.word.length() >= 1) {
+                    game.word = game.word.substring(0, game.word.length() - 1);
+                    game.wordLabel.setText(game.word);
+                }
+            }
+        });
+        stage.addActor(delLabel);
+
+
     }
 
     @Override
