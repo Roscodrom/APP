@@ -7,45 +7,34 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.util.Map;
-
-import sun.jvm.hotspot.ui.tree.SimpleTreeNode;
-
 public class IndividualGame extends ScreenAdapter {
-    private final int GAME_WIDTH = 480;
-    private final int GAME_HEIGHT = 800;
+    final int GAME_WIDTH = 480;
+    final int GAME_HEIGHT = 800;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Skin skin;
     private Stage stage;
     Game game = new Game();
     private Sound sound;
-    private ScrollPane scrollPane;
+    ScrollPane scrollPane;
     private VerticalGroup verticalGroup;
 
     @Override
@@ -115,7 +104,7 @@ public class IndividualGame extends ScreenAdapter {
                         sound = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.mp3"));
                         game.usedWords.add(game.word);
                         verticalGroup.addActor(new Label(game.word, skin));
-                        userPoints.setText(String.valueOf(Integer.valueOf(String.valueOf(userPoints.getText())) + (game.calculateWordPoints(game.word))));
+                        userPoints.setText(String.valueOf(Integer.parseInt(String.valueOf(userPoints.getText())) + (game.calculateWordPoints(game.word))));
                     } else {
                         sound = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.mp3"));
                     }
