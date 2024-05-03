@@ -111,7 +111,8 @@ public class Game {
         Collator collator = Collator.getInstance(new Locale("ca"));
 
         if (wordList.size() > 1) {
-            compareNum = collator.compare(player_word, (String) (wordList.get(wordList.size() / 2)));
+            compareNum = collator.compare(player_word.replaceAll("·", ""),
+                    (String) (wordList.get(wordList.size() / 2)).replaceAll("·", ""));
         } else {
             if (!(player_word.equals(wordList.get(0)))) {
                 wordNotInDict = true;
