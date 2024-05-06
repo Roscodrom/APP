@@ -46,6 +46,7 @@ public class MultiplayerGame extends ScreenAdapter {
     private final Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
     private Stage stage;
     Label timerLabel;
+    Label userPoints;
     int gameCountdown = 60;
     Timer gameTimer = new Timer();
     Game game = new Game();
@@ -63,6 +64,7 @@ public class MultiplayerGame extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
         timerLabel = new Label("00''", skin, "big");
+        userPoints = new Label("0", skin, "big");
 
         //String address = "roscodrom2.ieti.site";
         //int port = 443;
@@ -124,11 +126,6 @@ public class MultiplayerGame extends ScreenAdapter {
             }
         });
 
-        Label title = new Label("WAITING ROOM",skin, "big");
-        title.setPosition(GAME_WIDTH / 2f - title.getWidth()/2+40, 720);
-        title.setFontScale(0.9f);
-        stage.addActor(title);
-
         Label label1 = new Label("Estas a la\nsala d'espera!", skin, "big");
         label1.setWidth(GAME_WIDTH);
         label1.setAlignment(Align.center);
@@ -171,7 +168,7 @@ public class MultiplayerGame extends ScreenAdapter {
         stage.addActor(game.wordLabel);
 
 
-        Label userPoints = new Label("0", skin, "big");
+
         userPoints.setPosition(390, 340);
         userPoints.setAlignment(Align.right);
         stage.addActor(userPoints);
@@ -209,17 +206,7 @@ public class MultiplayerGame extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 if (game.word.length() >= 3) {
                     System.out.println("Validating: " + game.word);
-                    boolean isCorrect = game.checkUserWord(game.word, game.wordList);
-                    System.out.println(isCorrect);
-                    if (isCorrect) {
-                        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.mp3"));
-                        game.usedWords.add(game.word);
-                        verticalGroup.addActor(new Label(game.word + " x" + game.calculateWordPoints(game.word), skin));
-                        userPoints.setText(String.valueOf(Integer.parseInt(String.valueOf(userPoints.getText())) + (game.calculateWordPoints(game.word))));
-                    } else {
-                        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.mp3"));
-                    }
-                    sound.play();
+                    socket.send("{\"type\":\"CHECK_WORD\",\"data\":{\"word\":\""+game.word+"\"}}");
                 }
                 game.word = "";
                 game.wordLabel.setText("");
@@ -265,9 +252,9 @@ public class MultiplayerGame extends ScreenAdapter {
         public boolean onMessage(WebSocket webSocket, String packet) {
             System.out.println("Message:"+packet);
             try {
-                JSONObject data = new JSONObject(packet);
+                JSONObject resp = new JSONObject(packet);
 
-                switch (data.getString("type")) {
+                switch (resp.getString("type")) {
                     case "HANDSHAKE":
                         String apikey = readFile("api_token.txt");
                         String nickname = "";
@@ -281,7 +268,7 @@ public class MultiplayerGame extends ScreenAdapter {
                         socket.send("{\"type\":\"HANDSHAKE\", \"data\":{\"id\":\"" + apikey + "\",\"nickname\":\"" + nickname + "\", \"client\":\"android\"}}");
                         break;
                     case "TIEMPO_PARA_INICIO":
-                        JSONObject tiempo = data.getJSONObject("data");
+                        JSONObject tiempo = resp.getJSONObject("data");
                         int timeLeft = tiempo.getInt("tempsRestant");
                         boolean inGame = tiempo.getBoolean("enPartida");
                         int timeInSeconds = timeLeft / 1000 + (inGame ? 60 : 0);
@@ -292,6 +279,32 @@ public class MultiplayerGame extends ScreenAdapter {
                     case "GAME_START":
                         stage.clear();
                         multiplayerGame();
+                    case "WORD_POINTS":
+                        JSONObject data = resp.getJSONObject("data");
+                        String word = data.getString("word");
+                        int points = data.getInt("points");
+
+                        if (points > 0) {
+                            sound = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.mp3"));
+                            game.usedWords.add(game.word);
+                            Label userLabel = new Label(word + " x" + points, skin);
+                            userLabel.setColor(Color.BLUE);
+                            verticalGroup.addActor(userLabel);
+                            userPoints.setText(String.valueOf(Integer.parseInt(String.valueOf(userPoints.getText())) + points));
+                        } else {
+                            sound = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.mp3"));
+                        }
+                        sound.play();
+                    case "NEW_WORD":
+                        JSONObject dataRival = resp.getJSONObject("data");
+                        String otherWord = dataRival.getString("word");
+                        int otherPoints = dataRival.getInt("points");
+
+                        game.usedWords.add(game.word);
+                        Label wordLabel = new Label(otherWord + " x" + otherPoints, skin);
+                        wordLabel.setColor(Color.RED);
+                        verticalGroup.addActor(wordLabel);
+
                 }
 
 
