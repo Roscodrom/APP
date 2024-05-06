@@ -46,6 +46,20 @@ public class MainMenuScreen extends ScreenAdapter {
         title.setPosition((GAME_WIDTH / 2f - title.getWidth() / 2f), GAME_HEIGHT - title.getHeight() - 40);
         stage.addActor(title);
 
+        // TEMPORAL
+        Button testButton = new TextButton("waiting room", skin);
+        testButton.setSize(600, GAME_WIDTH / 4f);
+        testButton.setPosition(posX, 500);
+        testButton.setTransform(true);
+        testButton.setScale(0.7f);
+        stage.addActor(testButton);
+        testButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Roscodrom) Gdx.app.getApplicationListener()).showMultiplayerGame();
+            }
+        });
+
         Button individualButton = new TextButton("Partida Individual", skin);
         individualButton.setSize(600, GAME_WIDTH / 4f);
         individualButton.setPosition(posX, 400);
