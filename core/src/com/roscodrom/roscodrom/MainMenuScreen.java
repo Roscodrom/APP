@@ -17,15 +17,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.io.File;
-
 public class MainMenuScreen extends ScreenAdapter {
-    private final int GAME_WIDTH = 480;
-    private final int GAME_HEIGHT = 800;
-    private float posX = GAME_WIDTH / 2f - 210;
+    final int GAME_WIDTH = 480;
+    final int GAME_HEIGHT = 800;
+    final float posX = GAME_WIDTH / 2f - 210;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Skin skin;

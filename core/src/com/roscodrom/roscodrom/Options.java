@@ -17,8 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Options extends ScreenAdapter {
-    private final int GAME_WIDTH = 480;
-    private final int GAME_HEIGHT = 800;
+    final int GAME_WIDTH = 480;
+    final int GAME_HEIGHT = 800;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Skin skin;

@@ -20,14 +20,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameOver extends ScreenAdapter {
-    private final int GAME_WIDTH = 480;
-    private final int GAME_HEIGHT = 800;
-    private float posX = GAME_WIDTH / 2f - 210;
+    final int GAME_WIDTH = 480;
+    final int GAME_HEIGHT = 800;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Skin skin;
     private Stage stage;
-    private int points;
+    private final int points;
 
     public GameOver(int points) {
         this.points = points;

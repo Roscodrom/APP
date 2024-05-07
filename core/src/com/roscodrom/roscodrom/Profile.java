@@ -36,9 +36,9 @@ import java.util.Base64;
 import java.io.FileWriter;
 
 public class Profile extends ScreenAdapter {
-    private final int GAME_WIDTH = 480;
-    private final int GAME_HEIGHT = 800;
-    private float posX = GAME_WIDTH / 2f - 210;
+    final int GAME_WIDTH = 480;
+    final int GAME_HEIGHT = 800;
+    final float posX = GAME_WIDTH / 2f - 210;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Sprite profileSprite;
