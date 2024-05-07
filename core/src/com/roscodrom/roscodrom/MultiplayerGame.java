@@ -65,15 +65,15 @@ public class MultiplayerGame extends ScreenAdapter {
         timerLabel = new Label("00''", skin, "big");
         userPoints = new Label("0", skin, "big");
 
-        //String address = "roscodrom2.ieti.site";
-        //int port = 443;
-        String address = "192.168.16.82";
-        int port = 80;
+        String address = "roscodrom2.ieti.site";
+        int port = 443;
+        //String address = "192.168.16.82";
+        //int port = 80;
 
         waitingRoom();
 
-        socket = WebSockets.newSocket(WebSockets.toWebSocketUrl(address, port));
-        //socket = WebSockets.newSocket(WebSockets.toSecureWebSocketUrl(address, port));
+        //socket = WebSockets.newSocket(WebSockets.toWebSocketUrl(address, port));
+        socket = WebSockets.newSocket(WebSockets.toSecureWebSocketUrl(address, port));
         socket.setSendGracefully(false);
         socket.addListener(new MyWSListener());
         socket.connect();
