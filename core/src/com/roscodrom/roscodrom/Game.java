@@ -21,13 +21,12 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Random;
 
 public class Game {
-    private final int GAME_WIDTH = 480;
-    private Skin skin= new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+    final int GAME_WIDTH = 480;
+    private final Skin skin= new Skin(Gdx.files.internal("skin/glassy-ui.json"));
     public String word = "";
     public Label wordLabel;
-    private String[] rosco_letters = { "", "", "", "", "", "", "", "" };
-    private String[] vocales = {"A", "E", "I", "O", "U"};
-    private String[] consonantes = {"B", "C", "Ç", "D", "F", "G", "H", "J", "K", "L", "L·L", "M",
+    private final String[] vocales = {"A", "E", "I", "O", "U"};
+    private final String[] consonantes = {"B", "C", "Ç", "D", "F", "G", "H", "J", "K", "L", "L·L", "M",
                                     "N", "NY", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"};
     public List<String> wordList;
     public List<String> usedWords = new ArrayList<>();
@@ -55,7 +54,8 @@ public class Game {
 
     }
 
-    private void generateRoscoLetters() {
+    public String[] generateRoscoLetters() {
+        String[] rosco_letters = { "", "", "", "", "", "", "", "" };
         Random random = new Random();
         int countVocales = 0;
 
@@ -76,8 +76,9 @@ public class Game {
                     countVocales++;
                 }
             }
-            rosco_letters[i] = getRandomLetter(isVocal, random);
+            rosco_letters[i] = getRandomLetter(isVocal, random, rosco_letters);
         }
+        return rosco_letters;
 
     }
 
@@ -130,19 +131,19 @@ public class Game {
         }
     }
 
-    private String getRandomLetter(boolean isVocal, Random random) {
+    private String getRandomLetter(boolean isVocal, Random random, String[] rosco_letters) {
         String newLetter = "";
         boolean letterInRosco = true;
 
         while (letterInRosco) {
             newLetter = isVocal ? vocales[random.nextInt(vocales.length)] : consonantes[random.nextInt(consonantes.length)];
-            letterInRosco = checkLettersInRosco(newLetter);
+            letterInRosco = checkLettersInRosco(newLetter, rosco_letters);
         }
 
         return newLetter;
     }
 
-    private boolean checkLettersInRosco(String newLetter) {
+    private boolean checkLettersInRosco(String newLetter, String[] rosco_letters) {
         for (String letter : rosco_letters) {
             if (letter.equals(newLetter)) {
                 return true;
@@ -151,10 +152,8 @@ public class Game {
         return false;
     }
 
-    public Array<Actor> generateRosco() {
-        generateRoscoLetters();
+    public Array<Actor> generateRosco(String[] rosco_letters) {
         Array<Actor> actors = new Array<Actor>();
-        //Game game = new Game();
         int numberLetters = rosco_letters.length;
         int radius = 140;
 
@@ -169,7 +168,6 @@ public class Game {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (word.length()<=15){
-                        //System.out.println(letter);
                         word = word + letter.toUpperCase();
                         wordLabel.setText(word);
                     }
@@ -183,7 +181,6 @@ public class Game {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (word.length()<=14){
-                        //System.out.println(letter);
                         word = word + letter.toUpperCase();
                         wordLabel.setText(word);
                     }
@@ -195,8 +192,4 @@ public class Game {
         return actors;
     }
 
-    public String getLastWords() {
-        int length = usedWords.size();
-        return (usedWords.get(length-5) + "\n" + usedWords.get(length-4) + "\n" + usedWords.get(length-3) + "\n" + usedWords.get(length-2) + "\n" + usedWords.get(length-1));
-    }
 }

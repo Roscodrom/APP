@@ -42,22 +42,8 @@ public class GameOver extends ScreenAdapter {
 
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
-        ImageButton backButton = new ImageButton(skin);
-        backButton.setPosition(5, GAME_HEIGHT - (backButton.getHeight()-30));
-        backButton.setSize(backButton.getWidth()/2.1f,backButton.getHeight());
-        backButton.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/back_icon.png"))));
-        backButton.setTransform(true);
-        backButton.setScale(0.65f);
-        stage.addActor(backButton);
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Roscodrom) Gdx.app.getApplicationListener()).showMainMenuScreen();
-            }
-        });
-
         Label title = new Label("Game Over",skin, "big");
-        title.setPosition(GAME_WIDTH / 2f - title.getWidth()/2+40, 720);
+        title.setPosition(GAME_WIDTH / 2f - title.getWidth()/2, 720);
         title.setFontScale(0.9f);
         stage.addActor(title);
 

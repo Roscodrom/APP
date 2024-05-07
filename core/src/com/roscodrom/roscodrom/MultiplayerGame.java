@@ -9,19 +9,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
@@ -31,6 +28,7 @@ import com.github.czyzby.websocket.WebSocketListener;
 import com.github.czyzby.websocket.WebSocket;
 import com.github.czyzby.websocket.WebSockets;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +37,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class MultiplayerGame extends ScreenAdapter {
-    private final int GAME_WIDTH = 480;
-    private final int GAME_HEIGHT = 800;
+    final int GAME_WIDTH = 480;
+    final int GAME_HEIGHT = 800;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private final Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -50,10 +48,11 @@ public class MultiplayerGame extends ScreenAdapter {
     int gameCountdown = 60;
     Timer gameTimer = new Timer();
     Game game = new Game();
-    private Sound sound;
+    Sound sound;
     ScrollPane scrollPane;
     private VerticalGroup verticalGroup;
     WebSocket socket;
+    String[] rosco_letters = {};
 
     @Override
     public void show() {
@@ -68,7 +67,7 @@ public class MultiplayerGame extends ScreenAdapter {
 
         //String address = "roscodrom2.ieti.site";
         //int port = 443;
-        String address = "192.168.18.148";
+        String address = "192.168.16.82";
         int port = 80;
 
         waitingRoom();
@@ -112,20 +111,6 @@ public class MultiplayerGame extends ScreenAdapter {
 
 
     private void waitingRoom() {
-        ImageButton backButton = new ImageButton(skin);
-        backButton.setPosition(5, GAME_HEIGHT - (backButton.getHeight()-30));
-        backButton.setSize(backButton.getWidth()/2.1f,backButton.getHeight());
-        backButton.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/back_icon.png"))));
-        backButton.setTransform(true);
-        backButton.setScale(0.65f);
-        stage.addActor(backButton);
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Roscodrom) Gdx.app.getApplicationListener()).showMainMenuScreen();
-            }
-        });
-
         Label label1 = new Label("Estas a la\nsala d'espera!", skin, "big");
         label1.setWidth(GAME_WIDTH);
         label1.setAlignment(Align.center);
@@ -166,8 +151,6 @@ public class MultiplayerGame extends ScreenAdapter {
         game.wordLabel.setColor(Color.BLACK);
         game.wordLabel.setFontScale(0.55f);
         stage.addActor(game.wordLabel);
-
-
 
         userPoints.setPosition(390, 340);
         userPoints.setAlignment(Align.right);
@@ -215,7 +198,7 @@ public class MultiplayerGame extends ScreenAdapter {
         stage.addActor(sendButton);
 
 
-        Array<Actor> rosco = game.generateRosco();
+        Array<Actor> rosco = game.generateRosco(rosco_letters);
         for (Actor actor : rosco) {
             stage.addActor(actor);
         }
@@ -273,11 +256,14 @@ public class MultiplayerGame extends ScreenAdapter {
                         boolean inGame = tiempo.getBoolean("enPartida");
                         int timeInSeconds = timeLeft / 1000 + (inGame ? 60 : 0);
                         Gdx.app.postRunnable(() -> {
-                            timerLabel.setText(timeInSeconds + "''");  // Ensure UI updates are made on the main thread
+                            timerLabel.setText(timeInSeconds + "''");
                         });
                         break;
                     case "GAME_START":
                         stage.clear();
+                        JSONObject roscoMessage = resp.getJSONObject("data");
+                        JSONArray JSONArrayRosco = roscoMessage.getJSONArray("roscoLetters");
+                        rosco_letters = jsonArrayToStringArray(JSONArrayRosco);
                         multiplayerGame();
                     case "WORD_POINTS":
                         JSONObject data = resp.getJSONObject("data");
@@ -300,10 +286,12 @@ public class MultiplayerGame extends ScreenAdapter {
                         String otherWord = dataRival.getString("word");
                         int otherPoints = dataRival.getInt("points");
 
-                        game.usedWords.add(game.word);
-                        Label wordLabel = new Label(otherWord + " x" + otherPoints, skin);
-                        wordLabel.setColor(Color.RED);
-                        verticalGroup.addActor(wordLabel);
+                        if (otherPoints > 0) {
+                            game.usedWords.add(game.word);
+                            Label wordLabel = new Label(otherWord + " x" + otherPoints, skin);
+                            wordLabel.setColor(Color.RED);
+                            verticalGroup.addActor(wordLabel);
+                        }
 
                 }
 
@@ -331,13 +319,23 @@ public class MultiplayerGame extends ScreenAdapter {
             FileHandle file = Gdx.files.local(filepath);
 
             try (BufferedReader reader = new BufferedReader(file.reader())) {
-                return reader.readLine();  // Reads the first line
+                return reader.readLine();
             } catch (IOException e) {
-                // Handle exception
                 System.err.println("Error reading file: " + filepath);
                 e.printStackTrace();
-                return null;  // Return null if an error occurs
+                return null;
             }
+        }
+
+        public String[] jsonArrayToStringArray(JSONArray jsonArray) {
+            int length = jsonArray.length();
+            String[] stringArray = new String[length];
+
+            for (int i = 0; i < length; i++) {
+                stringArray[i] = jsonArray.getString(i);
+            }
+
+            return stringArray;
         }
     }
 }

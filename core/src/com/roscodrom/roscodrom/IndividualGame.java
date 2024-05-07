@@ -39,6 +39,7 @@ public class IndividualGame extends ScreenAdapter {
     private VerticalGroup verticalGroup;
     int countdown = 60;
     Timer timer = new Timer();
+    String[] rosco_letters = { "", "", "", "", "", "", "", "" };
 
     @Override
     public void show() {
@@ -145,8 +146,8 @@ public class IndividualGame extends ScreenAdapter {
         });
         stage.addActor(sendButton);
 
-
-        Array<Actor> rosco = game.generateRosco();
+        rosco_letters = game.generateRoscoLetters();
+        Array<Actor> rosco = game.generateRosco(rosco_letters);
         for (Actor actor : rosco) {
             stage.addActor(actor);
         }
